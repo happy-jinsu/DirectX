@@ -23,9 +23,9 @@ ID3D11InputLayout* pLayout;            // the pointer to the input layout
 ID3D11VertexShader* pVS;               // the pointer to the vertex shader
 ID3D11PixelShader* pPS;                // the pointer to the pixel shader
 ID3D11Buffer* pVBuffer;                // the pointer to the vertex buffer
-////////////////////1. ¹öÆÛ¸¦ ÇÏ³ª ´õ ¾²°Ú´Ù°í ¼±¾ð./////////////////////////////////////
+////////////////////1. ë²„í¼ë¥¼ í•˜ë‚˜ ë” ì“°ê² ë‹¤ê³  ì„ ì–¸./////////////////////////////////////
 ID3D11Buffer* pVBuffer2;                // the pointer to the vertex buffer 
-ID3D11Buffer* pVBuffer3;
+
 
 
 // a struct to define a single vertex
@@ -35,11 +35,10 @@ struct VERTEX { FLOAT X, Y, Z; D3DXCOLOR Color; };
 void InitD3D(HWND hWnd);    // sets up and initializes Direct3D
 void RenderFrame(void);     // renders a single frame
 void CleanD3D(void);        // closes Direct3D and releases memory
-void InitGraphics(void);    // creates the shape to render    253¹øÂ° ÄÚµå. Ã¹ ¹öÆÛ
+void InitGraphics(void);    // creates the shape to render    253ë²ˆì§¸ ì½”ë“œ. ì²« ë²„í¼
 
-//////2. ÇÏ³ª ´õ »ý¼º. ¹öÅØ½º ¹öÆÛ Ãß°¡¸¦ À§ÇÑ ÀÛ¾÷(´ÙÀ½Àº 241¹øÂ° ÁÙ ¼öÁ¤)////////////////////////////////////////
+//////2. í•˜ë‚˜ ë” ìƒì„±. ë²„í…ìŠ¤ ë²„í¼ ì¶”ê°€ë¥¼ ìœ„í•œ ìž‘ì—…////////////////////////////////////////
 void InitGraphics2(void);    // creates the shape to render 
-void InitGraphics3(void);
 
 
 void InitPipeline(void);    // loads and prepares the shaders
@@ -190,10 +189,7 @@ void InitD3D(HWND hWnd)
 
     InitPipeline();
     InitGraphics();
-    InitGraphics2();
-    InitGraphics3();
-
-
+    InitGraphics2();////3. ì¶”ê°€í•´ì£¼ê¸°/////////////////////////////////////////////;
 
 }
 
@@ -202,45 +198,36 @@ void InitD3D(HWND hWnd)
 void RenderFrame(void)
 {
     // clear the back buffer to a deep blue
-    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));    // ¹è°æ »ö±ò ¹Ù²Ù´Â °÷
+    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));    // ë°°ê²½ ìƒ‰ê¹” ë°”ê¾¸ëŠ” ê³³
 
     // select which vertex buffer to display
-    //µÎ°³ÀÇ ¹öÅØ½º ¹öÆÛ°¡ ¸ðµÎ µ¿ÀÏÇÑ ¹öÅØ½º ¹öÆÛ ½ºÅ¸ÀÏÀÌ¹Ç·Î ±×´ë·Î »ç¿ë  
+    //ë‘ê°œì˜ ë²„í…ìŠ¤ ë²„í¼ê°€ ëª¨ë‘ ë™ì¼í•œ ë²„í…ìŠ¤ ë²„í¼ ìŠ¤íƒ€ì¼ì´ë¯€ë¡œ ê·¸ëŒ€ë¡œ ì‚¬ìš©  
     UINT stride = sizeof(VERTEX);
     UINT offset = 0;
     
     //-----------------------------
-    //¹öÅØ½º ¹öÆÛ1·Î ·»´õ¸µ  
+    //ë²„í…ìŠ¤ ë²„í¼1ë¡œ ë Œë”ë§  
     devcon->IASetVertexBuffers(0, 1, &pVBuffer, &stride, &offset);
     // select which primtive type we are using
     devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     // draw the vertex buffer to the back buffer
-    devcon->Draw(24, 0);
+    devcon->Draw(26, 0);
 
 
     //-------------------------------
-    //5. ¸¶Áö¸·////////////////////////////////////////////////////////////////////////////////////////////////
-    //¹öÅØ½º ¹öÆÛ2·Î ·»´õ¸µ  
-    devcon->IASetVertexBuffers(0, 1, &pVBuffer2, &stride, &offset);  // ÀÌ¸§ ¹Ù²ãÁÖ±â
+    //6. ë§ˆì§€ë§‰////////////////////////////////////////////////////////////////////////////////////////////////
+    //ë²„í…ìŠ¤ ë²„í¼2ë¡œ ë Œë”ë§  
+    devcon->IASetVertexBuffers(0, 1, &pVBuffer2, &stride, &offset);  // ì´ë¦„ ë°”ê¿”ì£¼ê¸°
     //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-    devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST); // ¹» ±×¸±°ÇÁö ¾Ë·ÁÁÖ°í
-    devcon->Draw(26, 0);  //Á¡ ¸î°³ ½è´ÂÁö ±³Ã¼
+    devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST); // ë­˜ ê·¸ë¦´ê±´ì§€ ì•Œë ¤ì£¼ê³ 
+    devcon->Draw(30, 0);  //ì  ëª‡ê°œ ì¼ëŠ”ì§€ êµì²´
 
     //-----------------------------------
 
-    
-    //¹öÅØ½º ¹öÆÛ3À¸·Î ·»´õ¸µ  
-    devcon->IASetVertexBuffers(0, 1, &pVBuffer3, &stride, &offset);  // ÀÌ¸§ ¹Ù²ãÁÖ±â
-    //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-    devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // ¹» ±×¸±°ÇÁö ¾Ë·ÁÁÖ°í
-    devcon->Draw(6, 0);  //Á¡ ¸î°³ ½è´ÂÁö ±³Ã¼
-
-
 
     // switch the back buffer and the front buffer
-    swapchain->Present(0, 0);  //ÇÁ·ÐÆ® ¹öÆÛ·Î ¿Å°Ü¼­ Ãâ·Â
+    swapchain->Present(0, 0);  //í”„ë¡ íŠ¸ ë²„í¼ë¡œ ì˜®ê²¨ì„œ ì¶œë ¥
 }
 
 
@@ -254,9 +241,8 @@ void CleanD3D(void)
     pVS->Release();
     pPS->Release();
     pVBuffer->Release();
-    //////////////// 3. Ãß°¡·Î ¸¸µç °Íµµ ¸±¸®Áî ÇØÁØ´Ù.//////////////////////////////////////////////////////
+    //////////////// 4. ì¶”ê°€ë¡œ ë§Œë“  ê²ƒë„ ë¦´ë¦¬ì¦ˆ í•´ì¤€ë‹¤.//////////////////////////////////////////////////////
     pVBuffer2->Release(); 
-
 
     swapchain->Release();
     backbuffer->Release();
@@ -264,49 +250,58 @@ void CleanD3D(void)
     devcon->Release();
 }
 
-//¹öÅØ½º ¹öÆÛ 1 ¸¸µé±â 
+//ë²„í…ìŠ¤ ë²„í¼ 1 ë§Œë“¤ê¸° 
 // this is the function that creates the shape to render
-//°Ç¹° Æ²°ú »öÀ» ÀÔÈ÷´Â ¹öÆÛ
-void InitGraphics()
+//ê±´ë¬¼ í‹€ê³¼ ìƒ‰ì„ ìž…ížˆëŠ” ë²„í¼
+void InitGraphics() 
 {
     // create a triangle using the VERTEX struct
     VERTEX OurVertices[] =
     {
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.4f, -0.9f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // °Ç¹° ¾Õ¸é ÇÏ´Ü »ï°¢Çü * 3
+        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},
+        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},
+        {-0.4f, -0.9f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},  // ê±´ë¬¼ ì•žë©´ í•˜ë‹¨ ì‚¼ê°í˜• * 3
 
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},
+        {0.3f, 0.6f, 0.0f,D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},
+        {0.3f, -0.9f, 0.0f,D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},   // ê±´ë¬¼ ì•žë©´ ìƒë‹¨ ì‚¼ê°í˜• * 6
+
+        {-0.4f, 0.6f, 0.0f,D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},      
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // ê±´ë¬¼ ìœ— ë¶€ë¶„ ì™¼ìª½ ë²½ë©´ ìƒë‹¨ ì‚¼ê°í˜• * 9
+
+        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {-0.28f, 0.6f, 0.0f,D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},  // ê±´ë¬¼ ìœ— ë¶€ë¶„ ì™¼ìª½ ë²½ë©´ í•˜ë‹¨ ì‚¼ê°í˜• * 12
+
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // ê±´ë¬¼ ìœ—ìª½ ë²½ë©´ ì™¼->ì˜¤ ë°©í–¥ ìƒë‹¨ ì‚¼ê°í˜• * 15
+
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // ê±´ë¬¼ ìœ—ìª½ ë²½ë©´ ì˜¤ -> ì™¼ ë°©í–¥ í•˜ë‹¨ ì‚¼ê°í˜• * 18
+
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
+        {0.425f, 0.65f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
+        {0.3f, 0.6f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},          // ì˜¥ìƒ ë°”ë‹¥ ìƒë‹¨ ì‚¼ê°í˜• * 21
+
+        {-0.15f, 0.65f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
+        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
+        {-0.28f, 0.6f, 0.0f,D3DXCOLOR(0.50f, 0.158f, 0.160f, 1.0f)},       //ì˜¥ìƒ ë°”ë‹¥ í•˜ë‹¨ ì‚¼ê°í˜• * 24
+
+
         {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f,D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // °Ç¹° ¾Õ¸é »ó´Ü »ï°¢Çü * 6
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},      
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // °Ç¹° À­ ºÎºÐ ¿ÞÂÊ º®¸é »ó´Ü »ï°¢Çü * 9
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.27f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // °Ç¹° À­ ºÎºÐ ¿ÞÂÊ º®¸é ÇÏ´Ü »ï°¢Çü * 12
-
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, 0.75f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.425f, 0.67f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // °Ç¹° À­ÂÊ º®¸é ¿Þ->¿À ¹æÇâ »ó´Ü »ï°¢Çü * 15
-
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.425f, 0.67f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // °Ç¹° À­ÂÊ º®¸é ¿À -> ¿Þ ¹æÇâ ÇÏ´Ü »ï°¢Çü * 18
-
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, 0.75f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // °Ç¹° ¿·ÂÊ º®¸é Áß »ó´Ü º®¸é. À­ÂÊÀÌ µ¿ÀÏ¼±»ó º¯. * 21
+        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
+        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // ê±´ë¬¼ ì˜†ìª½ ë²½ë©´ ì¤‘ ìƒë‹¨ ë²½ë©´. ìœ—ìª½ì´ ë™ì¼ì„ ìƒ ë³€. * 26
 
         {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
         {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},     // °Ç¹° ¿·ÂÊ º®¸é Áß ÇÏ´Ü º®¸é. ¾Æ·§ÂÊÀÌ µ¿ÀÏ¼±»ó º¯ * 24
+        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)}     // ê±´ë¬¼ ì˜†ìª½ ë²½ë©´ ì¤‘ í•˜ë‹¨ ë²½ë©´. ì•„ëž«ìª½ì´ ë™ì¼ì„ ìƒ ë³€ * 30
 
-               //°Ç¹° ¿Á»ó ¹Ù´Ú ÇÏ´Ü * 30
+ 
 
-        /////////////////°Ç¹° ³¡//////////////
+        /////////////////ê±´ë¬¼ ë//////////////
 
 
   
@@ -318,7 +313,7 @@ void InitGraphics()
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-    bd.ByteWidth = sizeof(VERTEX) * 24;             // size is the VERTEX struct * 3
+    bd.ByteWidth = sizeof(VERTEX) * 30;             // size is the VERTEX struct * 3
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 
@@ -332,35 +327,35 @@ void InitGraphics()
     devcon->Unmap(pVBuffer, NULL);                                      // unmap the buffer
 }
 
-//////////////////////////////////////4. ¹öÅØ½º ¹öÆÛ 2 ¸¸µé±â////////////////////////////////////////////////// 
+//////////////////////////////////////5. ë²„í…ìŠ¤ ë²„í¼ 2 ë§Œë“¤ê¸°////////////////////////////////////////////////// 
 // this is the function that creates the shape to render
-// ¿Á»óÀÇ Å×µÎ¸® ÀÛ¾÷
+// ì˜¥ìƒì˜ í…Œë‘ë¦¬ ìž‘ì—…
 void InitGraphics2()
 {
     // create a triangle using the VERTEX struct
     VERTEX OurVertices[] =
     {
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.27f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.28f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.415f, 0.67f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)}, // ¿Á»ó ³»ºÎ
+        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)}, // ì˜¥ìƒ ë‚´ë¶€
 
 
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
         {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
-        {-0.15f, 0.75f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.55f, 0.75, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {0.55f, 0.7, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
         {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
         {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
-        {0.55f, 0.75f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //¿Á»ó Å×µÎ¸®
+        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //ì˜¥ìƒ í…Œë‘ë¦¬
 
 
         {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
@@ -373,29 +368,29 @@ void InitGraphics2()
         {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
         {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //°Ç¹° ¾Õ¸é Å×µÎ¸®
+        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //ê±´ë¬¼ ì•žë©´ í…Œë‘ë¦¬
 
 
         {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.55f, 0.75, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {0.55f, 0.7, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
 
         {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //°Ç¹° ¿·¸é Å×µÎ¸®
+        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //ê±´ë¬¼ ì˜†ë©´ í…Œë‘ë¦¬
     };
 
 
     // create the vertex buffer
-    //¹öÅØ½º ¹öÆÛ¸¦ ¼Â¾÷ÇÏ´Â ¹®±¸
+    //ë²„í…ìŠ¤ ë²„í¼ë¥¼ ì…‹ì—…í•˜ëŠ” ë¬¸êµ¬
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-    bd.ByteWidth = sizeof(VERTEX) * 26;             // size is the VERTEX struct * 4
+    bd.ByteWidth = sizeof(VERTEX) * 26;             // size is the VERTEX struct * 26
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 
     dev->CreateBuffer(&bd, NULL, &pVBuffer2);       // create the buffer  
-    ////¿©±â±îÁö°¡ ¼Â¾÷ ¹®±¸. º¹»ç ºÙ¿©³Ö±â ÇØ¼­ ´Ù¸¥ ¹öÆÛµµ Ãß°¡. ´ë½Å µÚÀÇ ÀÌ¸§¸¸ ¹Ù²ãÁÖ±â./////////////////
+    ////ì—¬ê¸°ê¹Œì§€ê°€ ì…‹ì—… ë¬¸êµ¬. ë³µì‚¬ ë¶™ì—¬ë„£ê¸° í•´ì„œ ë‹¤ë¥¸ ë²„í¼ë„ ì¶”ê°€. ëŒ€ì‹  ë’¤ì˜ ì´ë¦„ë§Œ ë°”ê¿”ì£¼ê¸°./////////////////
 
 
     // copy the vertices into the buffer
@@ -404,43 +399,6 @@ void InitGraphics2()
     memcpy(ms.pData, OurVertices, sizeof(OurVertices));                 // copy the data
     devcon->Unmap(pVBuffer2, NULL);                                      // unmap the buffer
 }
-
-void InitGraphics3()
-// Ã¢¹® ¸¸µå´Â °÷
-{ // create a triangle using the VERTEX struct
-    VERTEX OurVertices[] =
-    {
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)},
-        {0.415f, 0.67f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)},       //°Ç¹° ¿Á»ó ¹Ù´Ú »ó´Ü * 27
-
-        {-0.15f, 0.67f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)},
-         {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)},
-        {-0.27f, 0.6f, 0.0f, D3DXCOLOR(0.245f, 0.245f, 0.245f, 1.0f)}
-    };
-
-
-    // create the vertex buffer
-    //¹öÅØ½º ¹öÆÛ¸¦ ¼Â¾÷ÇÏ´Â ¹®±¸
-    D3D11_BUFFER_DESC bd;
-    ZeroMemory(&bd, sizeof(bd));
-
-    bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-    bd.ByteWidth = sizeof(VERTEX) * 6;             // size is the VERTEX struct * 4
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
-    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
-
-    dev->CreateBuffer(&bd, NULL, &pVBuffer3);       // create the buffer  
-    ////¿©±â±îÁö°¡ ¼Â¾÷ ¹®±¸. º¹»ç ºÙ¿©³Ö±â ÇØ¼­ ´Ù¸¥ ¹öÆÛµµ Ãß°¡. ´ë½Å µÚÀÇ ÀÌ¸§¸¸ ¹Ù²ãÁÖ±â./////////////////
-
-
-    // copy the vertices into the buffer
-    D3D11_MAPPED_SUBRESOURCE ms;
-    devcon->Map(pVBuffer3, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);    // map the buffer
-    memcpy(ms.pData, OurVertices, sizeof(OurVertices));                 // copy the data
-    devcon->Unmap(pVBuffer3, NULL);
-}
-
 
 
 // this function loads and prepares the shaders

@@ -23,10 +23,7 @@ ID3D11InputLayout* pLayout;            // the pointer to the input layout
 ID3D11VertexShader* pVS;               // the pointer to the vertex shader
 ID3D11PixelShader* pPS;                // the pointer to the pixel shader
 ID3D11Buffer* pVBuffer;                // the pointer to the vertex buffer
-////////////////////1. 버퍼를 하나 더 쓰겠다고 선언./////////////////////////////////////
-ID3D11Buffer* pVBuffer2;                // the pointer to the vertex buffer 
-
-
+ID3D11Buffer* pVBuffer2;                // the pointer to the vertex buffer
 
 // a struct to define a single vertex
 struct VERTEX { FLOAT X, Y, Z; D3DXCOLOR Color; };
@@ -35,12 +32,8 @@ struct VERTEX { FLOAT X, Y, Z; D3DXCOLOR Color; };
 void InitD3D(HWND hWnd);    // sets up and initializes Direct3D
 void RenderFrame(void);     // renders a single frame
 void CleanD3D(void);        // closes Direct3D and releases memory
-void InitGraphics(void);    // creates the shape to render    253번째 코드. 첫 버퍼
-
-//////2. 하나 더 생성. 버텍스 버퍼 추가를 위한 작업////////////////////////////////////////
-void InitGraphics2(void);    // creates the shape to render 
-
-
+void InitGraphics(void);    // creates the shape to render
+void InitGraphics2(void);
 void InitPipeline(void);    // loads and prepares the shaders
 
 // the WindowProc function prototype
@@ -72,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     hWnd = CreateWindowEx(NULL,
         L"WindowClass",
-        L"Our First Direct3D Program",
+        L"C093182_�̼��� <ȯŸ �������� ���� ����>",
         WS_OVERLAPPEDWINDOW,
         300,
         300,
@@ -189,8 +182,7 @@ void InitD3D(HWND hWnd)
 
     InitPipeline();
     InitGraphics();
-    InitGraphics2();////3. 추가해주기/////////////////////////////////////////////;
-
+    InitGraphics2();
 }
 
 
@@ -198,36 +190,30 @@ void InitD3D(HWND hWnd)
 void RenderFrame(void)
 {
     // clear the back buffer to a deep blue
-    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));    // 배경 색깔 바꾸는 곳
+    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));  //���� �ٲٴ� ��
 
     // select which vertex buffer to display
-    //두개의 버텍스 버퍼가 모두 동일한 버텍스 버퍼 스타일이므로 그대로 사용  
     UINT stride = sizeof(VERTEX);
     UINT offset = 0;
-    
-    //-----------------------------
-    //버텍스 버퍼1로 렌더링  
     devcon->IASetVertexBuffers(0, 1, &pVBuffer, &stride, &offset);
+
     // select which primtive type we are using
     devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
     // draw the vertex buffer to the back buffer
-    devcon->Draw(26, 0);
+    devcon->Draw(69, 0);
 
+    ///////////////////////
+    devcon->IASetVertexBuffers(0, 1, &pVBuffer2, &stride, &offset);
 
-    //-------------------------------
-    //6. 마지막////////////////////////////////////////////////////////////////////////////////////////////////
-    //버텍스 버퍼2로 렌더링  
-    devcon->IASetVertexBuffers(0, 1, &pVBuffer2, &stride, &offset);  // 이름 바꿔주기
-    //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    //devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-    devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST); // 뭘 그릴건지 알려주고
-    devcon->Draw(30, 0);  //점 몇개 썼는지 교체
+    // select which primtive type we are using
+    devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
-    //-----------------------------------
-
+    // draw the vertex buffer to the back buffer
+    devcon->Draw(20, 0);
 
     // switch the back buffer and the front buffer
-    swapchain->Present(0, 0);  //프론트 버퍼로 옮겨서 출력
+    swapchain->Present(0, 0);
 }
 
 
@@ -241,8 +227,7 @@ void CleanD3D(void)
     pVS->Release();
     pPS->Release();
     pVBuffer->Release();
-    //////////////// 4. 추가로 만든 것도 릴리즈 해준다.//////////////////////////////////////////////////////
-    pVBuffer2->Release(); 
+    pVBuffer2->Release();
 
     swapchain->Release();
     backbuffer->Release();
@@ -250,70 +235,123 @@ void CleanD3D(void)
     devcon->Release();
 }
 
-//버텍스 버퍼 1 만들기 
+
 // this is the function that creates the shape to render
-//건물 틀과 색을 입히는 버퍼
-void InitGraphics() 
+void InitGraphics()
 {
+    //���� �ؽ�.
+    // 
     // create a triangle using the VERTEX struct
     VERTEX OurVertices[] =
     {
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},
-        {-0.4f, -0.9f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},  // 건물 앞면 하단 삼각형 * 3
+        {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //H
+        {-0.185f, 0.03, 0.0f,D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //F
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //Z
 
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.95f, 0.158f, 0.160f, 1.0f)},
-        {0.3f, 0.6f, 0.0f,D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},
-        {0.3f, -0.9f, 0.0f,D3DXCOLOR(0.224f, 0.255f, 0.255f, 1.0f)},   // 건물 앞면 상단 삼각형 * 6
+        {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //H
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //Z
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //A1
 
-        {-0.4f, 0.6f, 0.0f,D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},      
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // 건물 윗 부분 왼쪽 벽면 상단 삼각형 * 9
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.28f, 0.6f, 0.0f,D3DXCOLOR(0.60f, 0.158f, 0.160f, 1.0f)},  // 건물 윗 부분 왼쪽 벽면 하단 삼각형 * 12
-
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // 건물 윗쪽 벽면 왼->오 방향 상단 삼각형 * 15
-
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},  // 건물 윗쪽 벽면 오 -> 왼 방향 하단 삼각형 * 18
-
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
-        {0.425f, 0.65f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
-        {0.3f, 0.6f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},          // 옥상 바닥 상단 삼각형 * 21
-
-        {-0.15f, 0.65f, 0.0f,  D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.102f, 0.153f, 0.153f, 1.0f)},
-        {-0.28f, 0.6f, 0.0f,D3DXCOLOR(0.50f, 0.158f, 0.160f, 1.0f)},       //옥상 바닥 하단 삼각형 * 24
+        {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //H
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //A1
+        {0.05f, -0.3f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},   //D
+ //���� �ؽ�.
 
 
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},   // 건물 옆쪽 벽면 중 상단 벽면. 윗쪽이 동일선상 변. * 26
+        {-0.185f, 0.03, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},   //F
+        {0.217f, 0.62f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //G
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},//Z
 
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.204f, 0.204f, 0.204f, 1.0f)}     // 건물 옆쪽 벽면 중 하단 벽면. 아랫쪽이 동일선상 변 * 30
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)}, //Z
+        {0.217f, 0.62f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //G
+        {0.246f, 0.473f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //R
 
- 
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)}, //Z
+        {0.246f, 0.473f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //R
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //A1
 
-        /////////////////건물 끝//////////////
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)}, //A1
+        {0.246f, 0.473f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //R
+        {0.317f, 0.370f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //W
+
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)}, //A1
+        {0.317f, 0.370f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //W
+        {0.05f, -0.3f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},   //D
+
+        {0.05f, -0.3f, 0.0f, D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},   //D
+        {0.317f, 0.370f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},  //W
+        {0.45f, 0.3f, 0.0f,D3DXCOLOR(0.760f, 0.329f, 0.078f, 1.0f)},      //E
+//���� ����.
 
 
-  
+        {0.217f, 0.62f, 0.0f,D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},    //G
+        {0.305f, 0.545f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //T
+         {0.246f, 0.473f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //R
+
+         {0.305f, 0.545f, 0.0f,D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //T
+         {0.317f, 0.370f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //W
+         {0.246f, 0.473f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //R
+
+         {0.305f, 0.545f, 0.0f,D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //T
+         {0.390f, 0.425f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //V
+         {0.317f, 0.370f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //W
+
+         {0.390f, 0.425f, 0.0f,D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},    //V
+        {0.45f, 0.3f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)},  //E
+        {0.317f, 0.370f, 0.0f, D3DXCOLOR(0.886f, 0.658f, 0.411f, 1.0f)}, //W
+//���� ���κ�
+
+
+        {0.26f, 0.55f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},    //L
+        {0.293f, 0.522f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //U
+         {0.269f, 0.488f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //S
+
+         {0.269f, 0.488f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //S
+         {0.293f, 0.522f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //U
+         {0.326f, 0.397f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //B1
+
+         {0.326f, 0.397f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //B1
+         {0.293f, 0.522f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //U
+         {0.359f, 0.439f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //C1
+
+        {0.326f, 0.397f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},   //B1
+        {0.359f, 0.439f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //C1
+        {0.4f, 0.35f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},    //N
+//���� �� ����
+
+
+         {-0.25f, -0.37f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+        {-0.231f, -0.253f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //I
+         {-0.232f, -0.305f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //K
+
+         {-0.25f, -0.37f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+         {-0.232f, -0.305f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //K
+         {-0.205f, -0.263f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //M
+
+          {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+         {-0.205f, -0.263f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //M
+         {-0.22f, -0.324f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //O
+
+          {-0.25f, -0.37f, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+         {-0.22f, -0.324f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //O
+         {-0.176f, -0.296f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //J
+
+          {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+         {-0.176f, -0.296f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //J
+         {-0.206f, -0.340f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //P
+
+         {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+         {-0.206f, -0.340f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //P
+         {-0.151f, -0.347f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //Q
+//���� �Ʒ� ��
     };
-
 
     // create the vertex buffer
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-    bd.ByteWidth = sizeof(VERTEX) * 30;             // size is the VERTEX struct * 3
+    bd.ByteWidth = sizeof(VERTEX) * 69;             // size is the VERTEX struct * 3
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 
@@ -327,70 +365,48 @@ void InitGraphics()
     devcon->Unmap(pVBuffer, NULL);                                      // unmap the buffer
 }
 
-//////////////////////////////////////5. 버텍스 버퍼 2 만들기////////////////////////////////////////////////// 
-// this is the function that creates the shape to render
-// 옥상의 테두리 작업
 void InitGraphics2()
 {
+    //���� �ؽ�.
+    // 
     // create a triangle using the VERTEX struct
     VERTEX OurVertices[] =
     {
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.670f, -0.752f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //N1
+        {-0.597f, -0.558, 0.0f,D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //M1
+        {-0.418f, -0.531f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //L1
+        {-0.365f, -0.344f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //01
 
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.28f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
+        {-0.25f, -0.37f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //H
+        {-0.185f, 0.03f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},  //F
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //Z
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //A1
+        {0.05f, -0.3f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},   //D
+        {0.45f, 0.3f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //E
+        {0.390f, 0.425f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //V
+        {0.305f, 0.545f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},   //T
+        {0.217f, 0.62f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //G
+        {0.246f, 0.473f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //R
+        {0.317f, 0.370f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},   //W
+        {0.45f, 0.3f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //E
+        {0.317f, 0.370f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //W
+        {-0.08f, -0.23f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)},   //A1
+        {-0.15f, -0.131f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)}, //Z
+        {0.246f, 0.473f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)} //R
 
-        {-0.15f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.425f, 0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)}, // 옥상 내부
-
-
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {-0.15f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.55f, 0.7, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {0.55f, 0.7f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //옥상 테두리
-
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {-0.4f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {-0.4f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, -0.9, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {-0.4f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, 0.6f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //건물 앞면 테두리
-
-
-        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.55f, 0.7, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-
-        {0.55f, -0.65f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},
-        {0.3f, -0.9f, 0.0f, D3DXCOLOR(0.153f, 0.153f, 0.204f, 1.0f)},  //건물 옆면 테두리
+//���� �Ʒ� ��
     };
 
-
     // create the vertex buffer
-    //버텍스 버퍼를 셋업하는 문구
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-    bd.ByteWidth = sizeof(VERTEX) * 26;             // size is the VERTEX struct * 26
+    bd.ByteWidth = sizeof(VERTEX) * 20;             // size is the VERTEX struct * 3
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 
-    dev->CreateBuffer(&bd, NULL, &pVBuffer2);       // create the buffer  
-    ////여기까지가 셋업 문구. 복사 붙여넣기 해서 다른 버퍼도 추가. 대신 뒤의 이름만 바꿔주기./////////////////
+    dev->CreateBuffer(&bd, NULL, &pVBuffer2);       // create the buffer
 
 
     // copy the vertices into the buffer
